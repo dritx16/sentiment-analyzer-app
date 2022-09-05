@@ -1,0 +1,205 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+
+$(document).ready(function() {
+    var $loading = $('#loadingDiv').hide();
+    var $page = $('#page');
+    $(document)
+        .ajaxStart(function () {
+            $page.hide();
+            $loading.show();
+        })
+        .ajaxStop(function () {
+            $loading.hide();
+            $page.show();
+        });
+    $("#how_btn").click(function() {     
+        $('.ui.modal').modal({blurring: true }).modal('show');
+    });
+});
+$(document).ready(function(){
+
+    $("#rand_btn").click(async function(){
+        var area = document.getElementById("p_text");
+        var value = $("#p_text").val(); 
+        $.ajax({
+            url: "/get_random_input",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function(random_text){
+                console.log(random_text);
+                document.getElementById("p_text").innerHTML = random_text; 
+                $("#p_text").val(random_text)
+
+                console.log("innerHtml: (rand_btn) ", area.innerHTML);
+                console.log("value: (rand_btn) ", $("#p_text").val());
+            }
+        });
+    });
+
+    $("#p_btn").click(function(){
+        var p_text = $("#p_text").val();
+        var result = document.getElementById("pred_res");
+
+        // area.innerHTML = p_text;
+
+
+        $.ajax({
+            url: "/predict",
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+                "text": p_text
+            }),
+            success: function(newPrediction){
+                console.log(newPrediction);
+                output = "<h3>Prediction Results</h3>";
+                
+                result.innerHTML = output;
+                $("#p_prog").progress({
+                    percent: newPrediction.pos
+                });
+                $("#neg_prog").progress({
+                    percent: newPrediction.neg
+                });
+                $("#notr_prog").progress({
+                    percent: newPrediction.neu
+                });
+                document.getElementById("p_result").style.visibility = "visible";
+            }
+        });
+    });
+});
+
+</script>
+
+<div id='parent_div_1'>
+    <div class ='child_div_1'>
+        <div class="ui form">
+            <div class="field">
+              <label>Text to Predict</label>
+              <textarea rows="2" style="height: 150px; width: 500px;" id="p_text"></textarea>
+            </div>
+        
+            <div class="ui primary vertical animated button" id="rand_btn" style="width: 250px;" tabindex="0" >
+            <div class="hidden content"><b>Get a random input!</b></div>
+            <div class="visible content">
+                <i style="font-size: 16;">Random Input</i>
+            </div>
+            </div>
+            
+            <div class="ui primary vertical animated button" id="p_btn" style="width: 250px;" tabindex="0">
+            <div class="hidden content"><b>Give it a try!</b></div>
+            <div class="visible content">
+                <i style="font-size: 16;">Predict</i>
+            </div>
+            </div>
+            <br><br>
+        </div>
+        
+        
+        <div id="how_btn" class="ui primary basic vertical animated button" tabindex="0" style="width: 110px;">
+            <div class="hidden content"><b>How to use it?</b></div>
+            <div class="visible content">
+              <i class="question icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class ='child_div_2'>
+        <div class="ui segment" style="width: 500px;" id="p_result" style="visibility: visible;">
+            <div id="pred_res"></div>
+            <div class="ui green progress" id="p_prog">
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="label">Positive</div>
+            </div>
+            <div class="ui red progress" id="neg_prog">
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="label">Negative</div>
+            </div>
+            <div class="ui blue progress" id="notr_prog">
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="label">Neutral</div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<div class="ui active massive centered inline loader" id="loadingDiv"></div>
+
+<div id="particle-container">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        How To Use the App?
+    </div>
+    <div class="content">
+        <p>You can do sentiment analysis of any sentence in Turkish with this app.</p>
+        <p>You can use the text box to enter any sentence or you can click <b>Random Input</b> button to get a random input.</p>
+        <p>Finally, click the <b>Predict</b> button to get the results. Simple is that!</p>
+    </div>
+    <div class="actions">
+        <div class="ui positive right labeled icon button">
+        I got it
+        <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+<a href="https://www.linkedin.com/in/suleymanates/">
+    <button class="ui linkedin button">
+        <i class="linkedin icon"></i>
+        LinkedIn
+    </button>
+</a>
+<a href="https://github.com/dritx16">
+    <button class="ui github button">
+        <i class="GitHub icon"></i>
+        GitHub
+    </button>
+</a>
+
+
+{% endblock %}

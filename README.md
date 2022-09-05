@@ -14,6 +14,12 @@ Tuskish Sentiment Analyzer application to determine the sentiment of the input t
 ```ruby
 docker-compose up --build
 ```
+- Wait until you see the initialization of the app.
+
+```ruby
+web_1 | INFO: Application startup complete.
+```
+
 - Navigate the following url in any web browser.
 
 ```ruby
